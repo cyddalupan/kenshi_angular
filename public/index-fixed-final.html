@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Angular Ionic PWA Skeleton</title>
+  
+  <!-- CRITICAL: Proper viewport for notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1b4b" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PWA Skeleton">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Reusable Angular Ionic PWA Skeleton - Device-aware installation">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- iOS Icon -->
+  <link rel="apple-touch-icon" href="https://ionicframework.com/img/ionic-logo.svg">
+  
+  <!-- Ionic + Tailwind CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* ========== CRITICAL FIXES ========== */
+    
+    /* 1. FIX SCROLL: Enable proper scrolling */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-y: auto; /* ENABLE VERTICAL SCROLL */
+    }
+    
+    /* 2. FIX NOTCH: Proper safe area handling */
+    /* App container should NOT have padding - let body handle it */
+    .app-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Header with notch protection */
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 24px;
+      padding-top: calc(24px + env(safe-area-inset-top, 0px)); /* NOTCH SAFE */
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Status bar spacer - matches app design */
+    .status-bar {
+      height: env(safe-area-inset-top, 0px);
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    
+    /* Content area - scrollable */
+    .content {
+      padding: 24px;
+      padding-bottom: 80px; /* Space for tab bar */
+      overflow-y: visible; /* Allow content to flow */
+    }
+    
+    /* Dark Mode */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #0f172a !important;
+        color: #f1f5f9 !important;
+      }
+      
+      .app-container { background: #1e293b !important; }
+      .header { background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%) !important; }
+      .status-bar { background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%) !important; }
+      .card { background: #334155 !important; border-color: #475569 !important; }
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    
+    /* Buttons */
+    .button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    
+    /* Installation box - prominent */
+    .install-box {
+      background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+      border: 2px solid #3b82f6;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .install-box {
+        background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        border-color: #6366f1;
+      }
+    }
+    
+    /* Tab bar */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      padding: 12px 0;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .tab-bar { background: #1e293b; border-top-color: #475569; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header { padding: 20px; padding-top: calc(20px + env(safe-area-inset-top, 0px)); }
+      .content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Status bar that matches header color -->
+  <div class="status-bar"></div>
+  
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <h1 style="margin: 0; font-size: 1.8rem; font-weight: 700;">Angular Ionic PWA Skeleton</h1>
+      <p style="margin: 8px 0 0 0; opacity: 0.9;">Fixed - Proper scroll & notch handling</p>
+    </div>
+    
+    <!-- Content (SCROLLABLE) -->
+    <div class="content">
+      <!-- Installation Instructions -->
+      <div id="install-box" class="install-box">
+        <h3 id="install-title" style="margin: 0 0 12px 0; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+          📱 Install as Native App
+        </h3>
+        <div id="install-steps"></div>
+        <button id="dismiss-install" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.5); border-radius: 8px; width: 100%; color: white; cursor: pointer;">
+          Dismiss
+        </button>
+      </div>
+      
+      <!-- PWA Status -->
+      <div class="card">
+        <h2 style="margin: 0 0 16px 0;">✅ Issues Fixed</h2>
+        <p><strong>1. Scroll:</strong> Vertical scrolling enabled with smooth behavior</p>
+        <p><strong>2. Notch:</strong> Header matches app design, notch doesn't block content</p>
+        <p><strong>3. Safari Instructions:</strong> Clear iOS installation steps</p>
+        <p><strong>4. App Design:</strong> Status bar matches header color</p>
+      </div>
+      
+      <!-- Scroll Test -->
+      <div class="card">
+        <h3 style="margin: 0 0 12px 0;">📜 Scroll Test</h3>
+        <div style="height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
+          <p>Line 1 - Test scroll functionality</p>
+          <p>Line 2 - Test scroll functionality</p>
+          <p>Line 3 - Test scroll functionality</p>
+          <p>Line 4 - Test scroll functionality</p>
+          <p>Line 5 - Test scroll functionality</p>
+          <p>Line 6 - Test scroll functionality</p>
+          <p>Line 7 - Test scroll functionality</p>
+          <p>Line 8 - Test scroll functionality</p>
+          <p>Line 9 - Test scroll functionality</p>
+          <p>Line 10 - Test scroll functionality</p>
+          <p>Line 11 - Test scroll functionality</p>
+          <p>Line 12 - Test scroll functionality</p>
+          <p>Line 13 - Test scroll functionality</p>
+          <p>Line 14 - Test scroll functionality</p>
+          <p>Line 15 - Test scroll functionality</p>
+          <p>Line 16 - Test scroll functionality</p>
+          <p>Line 17 - Test scroll functionality</p>
+          <p>Line 18 - Test scroll functionality</p>
+          <p>Line 19 - Test scroll functionality</p>
+          <p style="color: #4f46e5; font-weight: bold;">✅ Bottom reached - Scroll working!</p>
+        </div>
+      </div>
+      
+      <!-- Components -->
+      <div class="card">
+        <h2 style="margin: 0 0 16px 0;">📦 Available Components</h2>
+        <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid #e2e8f0;">
+          <h4 style="margin: 0 0 8px 0; color: #64748b;">Header Component</h4>
+          <p>With notch support and gradient background</p>
+        </div>
+        <button class="button" style="width: auto;">Test Button</button>
+      </div>
+    </div>
+    
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button style="background: none; border: none; color: #4f46e5; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+        <span style="font-size: 20px;">🏠</span>
+        <span>Home</span>
+      </button>
+      <button style="background: none; border: none; color: #64748b; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+        <span style="font-size: 20px;">🔧</span>
+        <span>Components</span>
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    // ========== DEVICE DETECTION ==========
+    const ua = navigator.userAgent;
+    let device = 'desktop';
+    let browser = 'unknown';
+    
+    if (/iPhone|iPad|iPod/.test(ua)) device = 'ios';
+    else if (/Android/.test(ua)) device = 'android';
+    
+    if (/Chrome/.test(ua)) browser = 'chrome';
+    else if (/Safari/.test(ua)) browser = 'safari';
+    
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    
+    // ========== INSTALLATION INSTRUCTIONS ==========
+    const installBox = document.getElementById('install-box');
+    const installTitle = document.getElementById('install-title');
+    const installSteps = document.getElementById('install-steps');
+    
+    // Show instructions only for mobile, not in PWA
+    if (!isPWA && (device === 'ios' || device === 'android')) {
+      installBox.style.display = 'block';
+      
+      if (device === 'ios') {
+        // FIX: Add Safari requirement
+        installTitle.innerHTML = '📱 Install on iOS (Use Safari)';
+        installSteps.innerHTML = `
+          <p><strong>⚠️ IMPORTANT: Must use Safari browser</strong></p>
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Open in <strong>Safari</strong> (not Chrome)</li>
+            <li>Tap the <strong>Share</strong> button <span style="color: #4f46e5;">⎋</span></li>
+            <li>Scroll down to <strong>"Add to Home Screen"</strong></li>
+            <li>Tap <strong>"Add"</strong> in top right</li>
+            <li>Launch from home screen</li>
+          </ol>
+          <p style="margin-top: 8px; font-size: 0.9rem; color: #1e40af;">
+            <em>iOS only allows PWA installation via Safari browser</em>
+          </p>
+        `;
+      } else if (device === 'android') {
+        installTitle.innerHTML = '📱 Install on Android';
+        installSteps.innerHTML = `
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Tap the <strong>Menu</strong> button (⋮) in Chrome</li>
+            <li>Tap <strong>"Install app"</strong> or "Add to Home screen"</li>
+            <li>Tap <strong>"Install"</strong> in the popup</li>
+            <li>Launch from home screen or app drawer</li>
+          </ol>
+        `;
+      }
+    }
+    
+    // Dismiss button
+    document.getElementById('dismiss-install').addEventListener('click', () => {
+      installBox.style.display = 'none';
+      localStorage.setItem('installDismissed', 'true');
+    });
+    
+    // Check if previously dismissed
+    if (localStorage.getItem('installDismissed') === 'true') {
+      installBox.style.display = 'none';
+    }
+    
+    // ========== LOGGING FOR DEBUGGING ==========
+    console.log('PWA Fixed Version Loaded');
+    console.log('Device:', device, 'Browser:', browser);
+    console.log('PWA Mode:', isPWA ? 'Installed' : 'Not installed');
+    console.log('Safe area top:', 'env(safe-area-inset-top) supported:', 
+                CSS.supports('padding-top: env(safe-area-inset-top)'));
+    
+    // Test scroll
+    console.log('Scroll test - body overflow-y:', getComputedStyle(document.body).overflowY);
+    
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch(err => console.log('SW registration failed:', err));
+    }
+  </script>
+</body>
+</html>

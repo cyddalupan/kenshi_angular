@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head><title>Notch & Scroll Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<style>
+  body { 
+    font-family: sans-serif; 
+    margin: 0; 
+    padding: 0;
+    padding-top: env(safe-area-inset-top);
+    background: #f8fafc;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .test { 
+    padding: 20px; 
+    margin: 15px; 
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .pass { border-left: 4px solid #22c55e; }
+  .fail { border-left: 4px solid #ef4444; }
+  
+  .notch-visualizer {
+    height: env(safe-area-inset-top, 20px);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  .scroll-test {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="notch-visualizer">
+    🔍 Notch Area: safe-area-inset-top = <span id="safe-area-value">0px</span>
+  </div>
+  
+  <div style="margin-top: calc(40px + env(safe-area-inset-top, 0px)); padding: 20px;">
+    <h1>📱 Notch & Scroll Verification</h1>
+    
+    <div class="test" id="test1">
+      <h3>✅ 1. Notch Handling</h3>
+      <p>Status: <span id="notch-status">Checking...</span></p>
+      <p>The colored bar above should:</p>
+      <ul>
+        <li>Match header color of main PWA</li>
+        <li>Extend under the notch (not be cut off)</li>
+        <li>Content should start below it</li>
+      </ul>
+    </div>
+    
+    <div class="test" id="test2">
+      <h3>✅ 2. Scroll Functionality</h3>
+      <p>Status: <span id="scroll-status">Checking...</span></p>
+      <div class="scroll-test">
+        <p>Scroll test line 1</p><p>Scroll test line 2</p><p>Scroll test line 3</p>
+        <p>Scroll test line 4</p><p>Scroll test line 5</p><p>Scroll test line 6</p>
+        <p>Scroll test line 7</p><p>Scroll test line 8</p><p>Scroll test line 9</p>
+        <p>Scroll test line 10</p><p>Scroll test line 11</p><p>Scroll test line 12</p>
+        <p>Scroll test line 13</p><p>Scroll test line 14</p><p>Scroll test line 15</p>
+        <p>Scroll test line 16</p><p>Scroll test line 17</p><p>Scroll test line 18</p>
+        <p>Scroll test line 19</p><p style="color: #4f46e5; font-weight: bold;">✅ Bottom reached - Scroll working!</p>
+      </div>
+    </div>
+    
+    <div class="test" id="test3">
+      <h3>✅ 3. Safari Instructions</h3>
+      <p>Status: <span id="safari-status">Checking...</span></p>
+      <p>On iOS, installation instructions should:</p>
+      <ul>
+        <li>Explicitly mention "Use Safari browser"</li>
+        <li>Explain iOS PWA installation requires Safari</li>
+        <li>Provide clear step-by-step instructions</li>
+      </ul>
+    </div>
+    
+    <div class="test">
+      <h3>📱 Current Device Info</h3>
+      <p id="device-info">Detecting...</p>
+      <p><strong>Viewport:</strong> <span id="viewport-info">checking...</span></p>
+    </div>
+  </div>
+  
+  <script>
+    // Update safe area value
+    const safeArea = CSS.supports('padding-top: env(safe-area-inset-top)') ? 
+                    'Supported' : 'Not supported';
+    document.getElementById('safe-area-value').textContent = safeArea;
+    
+    // Device detection
+    const ua = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/.test(ua);
+    const isAndroid = /Android/.test(ua);
+    const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
+    
+    // Test 1: Notch handling
+    const notchTest = document.getElementById('test1');
+    const notchStatus = document.getElementById('notch-status');
+    
+    if (CSS.supports('padding-top: env(safe-area-inset-top)')) {
+      notchStatus.textContent = '✅ PASS - Safe area supported';
+      notchTest.classList.add('pass');
+    } else {
+      notchStatus.textContent = '⚠️ WARNING - Safe area not supported';
+      notchTest.classList.add('fail');
+    }
+    
+    // Test 2: Scroll functionality
+    const scrollTest = document.getElementById('test2');
+    const scrollStatus = document.getElementById('scroll-status');
+    const scrollDiv = document.querySelector('.scroll-test');
+    
+    if (scrollDiv && scrollDiv.scrollHeight > scrollDiv.clientHeight) {
+      scrollStatus.textContent = '✅ PASS - Scroll enabled';
+      scrollTest.classList.add('pass');
+    } else {
+      scrollStatus.textContent = '❌ FAIL - Scroll not working';
+      scrollTest.classList.add('fail');
+    }
+    
+    // Test 3: Safari instructions
+    const safariTest = document.getElementById('test3');
+    const safariStatus = document.getElementById('safari-status');
+    
+    if (isIOS) {
+      safariStatus.textContent = '✅ PASS - iOS device detected, Safari instructions shown';
+      safariTest.classList.add('pass');
+    } else {
+      safariStatus.textContent = 'ℹ️ INFO - Not iOS device';
+      safariTest.classList.remove('pass', 'fail');
+    }
+    
+    // Device info
+    document.getElementById('device-info').innerHTML = `
+      <strong>Device:</strong> ${isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop'}<br>
+      <strong>Browser:</strong> ${isSafari ? 'Safari' : 'Chrome/Other'}<br>
+      <strong>Notch Support:</strong> ${safeArea}<br>
+      <strong>Body Scroll:</strong> ${getComputedStyle(document.body).overflowY}
+    `;
+    
+    // Viewport info
+    document.getElementById('viewport-info').textContent = 
+      `width=${window.innerWidth}, height=${window.innerHeight}`;
+    
+    console.log('Notch & Scroll Test Complete');
+    console.log('Device:', isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop');
+    console.log('Safe area:', safeArea);
+    console.log('Body overflow-y:', getComputedStyle(document.body).overflowY);
+  </script>
+</body>
+</html>

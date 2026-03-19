@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ToyBits PWA Skeleton</title>
+  
+  <!-- CRITICAL: Proper viewport for notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1b4b" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ToyBits">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="ToyBits PWA Skeleton - Device-aware Progressive Web App">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="icons/icon-192x192.png" type="image/png">
+  
+  <!-- iOS Icon -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  
+  <!-- Ionic + Tailwind CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* Custom styles */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .card {
+        background: #334155;
+        border-color: #475569;
+      }
+    }
+    
+    .install-box {
+      background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+      border: 2px solid #3b82f6;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .install-box {
+        background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        border-color: #6366f1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <ion-app>
+    <!-- Header -->
+    <ion-header>
+      <ion-toolbar style="--background: linear-gradient(135deg, #4f46e5, #7c3aed); --color: white;">
+        <ion-title style="font-size: 18px; font-weight: 600;">ToyBits PWA Skeleton</ion-title>
+        <ion-buttons slot="end">
+          <ion-button id="theme-toggle" fill="clear" style="--color: white;">
+            <ion-icon slot="icon-only" name="moon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    
+    <!-- Main Content with Tabs -->
+    <ion-content>
+      <!-- Tab 1: Home -->
+      <div id="home-tab" style="display: block;">
+        <div style="padding: 20px;">
+          <!-- Installation Instructions -->
+          <div id="install-box" class="install-box">
+            <h3 id="install-title" style="margin: 0 0 12px 0; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+              📱 Install as Native App
+            </h3>
+            <div id="install-steps"></div>
+            <button id="dismiss-install" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.5); border-radius: 8px; width: 100%; color: white; cursor: pointer;">
+              Dismiss
+            </button>
+          </div>
+          
+          <!-- Status -->
+          <div class="card">
+            <h2 style="margin: 0 0 16px 0;">📊 Device Status</h2>
+            <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid #e2e8f0;">
+              <p><strong>Device:</strong> <span id="device-type">Detecting...</span></p>
+              <p><strong>Browser:</strong> <span id="browser-type">Detecting...</span></p>
+              <p><strong>PWA Mode:</strong> <span id="pwa-status">Checking...</span></p>
+            </div>
+          </div>
+          
+          <!-- Features -->
+          <div class="card">
+            <h2 style="margin: 0 0 16px 0;">✨ Features</h2>
+            <p><strong>1. Scroll:</strong> Vertical scrolling enabled with smooth behavior</p>
+            <p><strong>2. Notch:</strong> Header matches app design, notch doesn't block content</p>
+            <p><strong>3. Safari Instructions:</strong> Clear iOS installation steps</p>
+            <p><strong>4. App Design:</strong> Status bar matches header color</p>
+          </div>
+          
+          <!-- Scroll Test -->
+          <div class="card">
+            <h3 style="margin: 0 0 12px 0;">📜 Scroll Test</h3>
+            <div style="height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
+              <p>Line 1 - Test scroll functionality</p>
+              <p>Line 2 - Test scroll functionality</p>
+              <p>Line 3 - Test scroll functionality</p>
+              <p>Line 4 - Test scroll functionality</p>
+              <p>Line 5 - Test scroll functionality</p>
+              <p>Line 6 - Test scroll functionality</p>
+              <p>Line 7 - Test scroll functionality</p>
+              <p>Line 8 - Test scroll functionality</p>
+              <p>Line 9 - Test scroll functionality</p>
+              <p>Line 10 - Test scroll functionality</p>
+              <p>Line 11 - Test scroll functionality</p>
+              <p>Line 12 - Test scroll functionality</p>
+              <p>Line 13 - Test scroll functionality</p>
+              <p>Line 14 - Test scroll functionality</p>
+              <p>Line 15 - Test scroll functionality</p>
+              <p>Line 16 - Test scroll functionality</p>
+              <p>Line 17 - Test scroll functionality</p>
+              <p>Line 18 - Test scroll functionality</p>
+              <p>Line 19 - Test scroll functionality</p>
+              <p style="color: #4f46e5; font-weight: bold;">✅ Bottom reached - Scroll working!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab 2: Components -->
+      <div id="components-tab" style="display: none; padding: 20px;">
+        <div class="card">
+          <h2 style="margin: 0 0 16px 0;">📦 Available Components</h2>
+          
+          <!-- Ionic Components Demo -->
+          <div style="margin: 20px 0;">
+            <h3 style="color: #4f46e5; margin-bottom: 12px;">Ionic Components</h3>
+            
+            <!-- Buttons -->
+            <div style="margin-bottom: 20px;">
+              <h4>Buttons</h4>
+              <ion-button expand="block" color="primary">Primary Button</ion-button>
+              <ion-button expand="block" color="secondary" style="margin-top: 8px;">Secondary Button</ion-button>
+              <ion-button expand="block" fill="outline" color="primary" style="margin-top: 8px;">Outline Button</ion-button>
+            </div>
+            
+            <!-- Cards -->
+            <div style="margin-bottom: 20px;">
+              <h4>Cards</h4>
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>Card Title</ion-card-title>
+                  <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  This is a sample Ionic card component with proper styling.
+                </ion-card-content>
+              </ion-card>
+            </div>
+            
+            <!-- Lists -->
+            <div style="margin-bottom: 20px;">
+              <h4>Lists</h4>
+              <ion-list>
+                <ion-item>
+                  <ion-label>Item 1</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Item 2</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Item 3</ion-label>
+                </ion-item>
+              </ion-list>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab 3: Settings -->
+      <div id="settings-tab" style="display: none; padding: 20px;">
+        <div class="card">
+          <h2 style="margin: 0 0 16px 0;">⚙️ Settings</h2>
+          
+          <!-- App Info -->
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #4f46e5; margin-bottom: 12px;">App Information</h3>
+            <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid #e2e8f0;">
+              <p><strong>Version:</strong> 1.0.0</p>
+              <p><strong>Build:</strong> Skeleton v2</p>
+              <p><strong>PWA Status:</strong> <span id="settings-pwa-status">Checking...</span></p>
+              <p><strong>Service Worker:</strong> <span id="settings-sw-status">Checking...</span></p>
+            </div>
+          </div>
+          
+          <!-- Theme Settings -->
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #4f46e5; margin-bottom: 12px;">Theme</h3>
+            <ion-list>
+              <ion-item>
+                <ion-label>Dark Mode</ion-label>
+                <ion-toggle id="dark-mode-toggle"></ion-toggle>
+              </ion-item>
+            </ion-list>
+          </div>
+          
+          <!-- Cache Management -->
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #4f46e5; margin-bottom: 12px;">Cache</h3>
+            <ion-button expand="block" color="medium" id="clear-cache-btn">
+              Clear Cache
+            </ion-button>
+            <p style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">
+              Clears service worker cache and reloads the app
+            </p>
+          </div>
+        </div>
+      </div>
+    </ion-content>
+    
+    <!-- Tab Bar -->
+    <ion-tabs>
+      <ion-tab-bar slot="bottom" style="--background: white; --border: 1px solid #e2e8f0;">
+        <ion-tab-button tab="home" selected style="--color: #64748b; --color-selected: #4f46e5;">
+          <ion-icon name="home"></ion-icon>
+          <ion-label>Home</ion-label>
+        </ion-tab-button>
+        
+        <ion-tab-button tab="components" style="--color: #64748b; --color-selected: #4f46e5;">
+          <ion-icon name="construct"></ion-icon>
+          <ion-label>Components</ion-label>
+        </ion-tab-button>
+        
+        <ion-tab-button tab="settings" style="--color: #64748b; --color-selected: #4f46e5;">
+          <ion-icon name="settings"></ion-icon>
+          <ion-label>Settings</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-app>
+  
+  <script>
+    // ========== DEVICE DETECTION ==========
+    const ua = navigator.userAgent;
+    let device = 'desktop';
+    let browser = 'unknown';
+    
+    if (/iPhone|iPad|iPod/.test(ua)) device = 'ios';
+    else if (/Android/.test(ua)) device = 'android';
+    
+    if (/Chrome/.test(ua)) browser = 'chrome';
+    else if (/Safari/.test(ua)) browser = 'safari';
+    
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    
+    // Update device info
+    document.getElementById('device-type').textContent = device;
+    document.getElementById('browser-type').textContent = browser;
+    document.getElementById('pwa-status').textContent = isPWA ? '✅ Installed' : '❌ Not installed';
+    document.getElementById('settings-pwa-status').textContent = isPWA ? '✅ Installed' : '❌ Not installed';
+    
+    // ========== INSTALLATION INSTRUCTIONS ==========
+    const installBox = document.getElementById('install-box');
+    const installTitle = document.getElementById('install-title');
+    const installSteps = document.getElementById('install-steps');
+    
+    // Show instructions only for mobile, not in PWA
+    if (!isPWA && (device === 'ios' || device === 'android')) {
+      installBox.style.display = 'block';
+      
+      if (device === 'ios') {
+        installTitle.innerHTML = '📱 Install on iOS (Use Safari)';
+        installSteps.innerHTML = `
+          <p><strong>⚠️ IMPORTANT: Must use Safari browser</strong></p>
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Open in <strong>Safari</strong> (not Chrome)</li>
+            <li>Tap the <strong>Share</strong> button <span style="color: #4f46e5;">⎋</span></li>
+            <li>Scroll down to <strong>"Add to Home Screen"</strong></li>
+            <li>Tap <strong>"Add"</strong> in top right</li>
+            <li>Launch from home screen</li>
+          </ol>
+          <p style="margin-top: 8px; font-size: 0.9rem; color: #1e40af;">
+            <em>iOS only allows PWA installation via Safari browser</em>
+          </p>
+        `;
+      } else if (device === 'android') {
+        installTitle.innerHTML = '📱 Install on Android';
+        installSteps.innerHTML = `
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Tap the <strong>Menu</strong> button (⋮)</li>
+            <li>Select <strong>"Install app"</strong> or "Add to Home screen"</li>
+            <li>Tap <strong>"Install"</strong></li>
+            <li>Launch from home screen</li>
+          </ol>
+        `;
+      }
+    }
+    
+    // Dismiss install button
+    document.getElementById('dismiss-install').addEventListener('click', () => {
+      installBox.style.display = 'none';
+    });
+    
+    // ========== TAB NAVIGATION ==========
+    const tabs = document.querySelectorAll('ion-tab-button');
+    const tabContents = {
+      'home': document.getElementById('home-tab'),
+      'components': document.getElementById('components-tab'),
+      'settings': document.getElementById('settings-tab')
+    };
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.getAttribute('tab');
+        
+        // Hide all tab contents
+        Object.values(tabContents).forEach(content => {
+          content.style.display = 'none';
+        });
+        
+        // Show selected tab content
+        if (tabContents[tabName]) {
+          tabContents[tabName].style.display = 'block';
+        }
+        
+        // Update tab selection
+        tabs.forEach(t => {
+          t.selected = t === tab;
+        });
+      });
+    });
+    
+    // ========== THEME TOGGLE ==========
+    const themeToggle = document.getElementById('theme-toggle');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      updateThemeIcon();
+    });
+    
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      updateThemeIcon();
+    });
+    
+    function updateThemeIcon() {
+      const isDark = document.body.classList.contains('dark');
+      const icon = themeToggle.querySelector('ion-icon');
+      icon.name = isDark ? 'sunny' : 'moon';
+      darkModeToggle.checked = isDark;
+    }
+    
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark');
+    }
+    updateThemeIcon();
+    
+    // ========== SERVICE WORKER ==========
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(registration => {
+          console.log('Service Worker registered:', registration);
+          document.getElementById('settings-sw-status').textContent = '✅ Registered';
+        })
+        .catch(error => {
+          console.log('Service Worker registration failed:', error);
+          document.getElementById('settings-sw-status').textContent = '❌ Failed: ' + error.message;
+        });
+    } else {
+      document.getElementById('settings-sw-status').textContent = '❌ Not supported';
+    }
+    
+    // Clear cache button
+    document.getElementById('clear-cache-btn').addEventListener('click', () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration()
+          .then(registration => {
+            if (registration) {
+              return caches.delete('angular-ionic-pwa-skeleton-v2');
+            }
+          })
+          .then(() => {
+            alert('Cache cleared. Reloading...');
+            window.location.reload();
+          })
+          .catch(error => {
+            alert('Error clearing cache: ' + error.message);
+          });
+      }
+    });
+    
+    // ========== PWA INSTALL PROMPT ==========
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      deferredPrompt = e;
+      
+      // Show install button if not in PWA mode
+      if (!isPWA) {
+        console.log('PWA install available');
+      }
+    });
+    
+    // ========== OFFLINE DETECTION ==========
+    window.addEventListener('online', () => {
+      console.log('App is online');
+    });
+    
+    window.addEventListener('offline', () => {
+      console.log('App is offline');
+    });
+    
+    console.log('ToyBits PWA Skeleton loaded successfully');
+    console.log('Device:', device, 'Browser:', browser, 'PWA:', isPWA);
+  </script>
+</body>
+</html>

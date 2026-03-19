@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Angular Ionic PWA Skeleton</title>
+  
+  <!-- PWA Configuration -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1b4b" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PWA Skeleton">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Reusable Angular Ionic PWA Skeleton - Device-aware installation">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- iOS Icon -->
+  <link rel="apple-touch-icon" href="https://ionicframework.com/img/ionic-logo.svg">
+  
+  <!-- Ionic + Tailwind CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* Base styles - keep minimal */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #0f172a;
+        color: #f1f5f9;
+      }
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 30px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .card {
+        background: #1e293b;
+        border-color: #475569;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Angular Ionic PWA Skeleton</h1>
+    <p>Clean, reusable template with device-aware installation</p>
+  </div>
+  
+  <div class="container">
+    <!-- Installation instructions will be dynamically added -->
+    <div id="install-box" class="card" style="display: none;">
+      <h3 id="install-title">📱 Install as App</h3>
+      <div id="install-steps"></div>
+      <button id="dismiss-install" style="margin-top: 15px; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; width: 100%; cursor: pointer;">
+        Dismiss
+      </button>
+    </div>
+    
+    <div class="card">
+      <h2>🚀 About This Skeleton</h2>
+      <p>This is a reusable Angular Ionic PWA skeleton with:</p>
+      <ul style="margin: 15px 0; padding-left: 20px;">
+        <li>Device-aware installation instructions</li>
+        <li>Offline PWA functionality</li>
+        <li>Dark mode support</li>
+        <li>Native app styling</li>
+        <li>Clean, minimal design</li>
+      </ul>
+    </div>
+    
+    <div class="card">
+      <h2>📱 Device Info</h2>
+      <div id="device-info">Loading...</div>
+    </div>
+  </div>
+  
+  <script>
+    // Device detection
+    const ua = navigator.userAgent;
+    let device = 'desktop';
+    
+    if (/iPhone|iPad|iPod/.test(ua)) device = 'ios';
+    else if (/Android/.test(ua)) device = 'android';
+    
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    
+    // Show installation instructions only for mobile devices, not in PWA
+    const installBox = document.getElementById('install-box');
+    const installTitle = document.getElementById('install-title');
+    const installSteps = document.getElementById('install-steps');
+    
+    if (!isPWA && (device === 'ios' || device === 'android')) {
+      installBox.style.display = 'block';
+      
+      if (device === 'ios') {
+        installTitle.textContent = '📱 Install on iOS';
+        installSteps.innerHTML = `
+          <p>To install this PWA on iOS:</p>
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Tap Share button (⎋)</li>
+            <li>Scroll to "Add to Home Screen"</li>
+            <li>Tap "Add"</li>
+          </ol>
+        `;
+      } else {
+        installTitle.textContent = '📱 Install on Android';
+        installSteps.innerHTML = `
+          <p>To install this PWA on Android:</p>
+          <ol style="margin: 10px 0; padding-left: 20px;">
+            <li>Tap Menu (⋮) in Chrome</li>
+            <li>Tap "Install app"</li>
+            <li>Tap "Install"</li>
+          </ol>
+        `;
+      }
+    }
+    
+    // Dismiss functionality
+    document.getElementById('dismiss-install').addEventListener('click', () => {
+      installBox.style.display = 'none';
+      localStorage.setItem('installDismissed', 'true');
+    });
+    
+    // Check if previously dismissed
+    if (localStorage.getItem('installDismissed') === 'true') {
+      installBox.style.display = 'none';
+    }
+    
+    // Device info display
+    const deviceInfo = document.getElementById('device-info');
+    const browser = ua.includes('Chrome') ? 'Chrome' : 
+                   ua.includes('Safari') ? 'Safari' : 
+                   ua.includes('Firefox') ? 'Firefox' : 'Other';
+    
+    deviceInfo.innerHTML = `
+      <p><strong>Device:</strong> ${device === 'ios' ? 'iOS' : device === 'android' ? 'Android' : 'Desktop'}</p>
+      <p><strong>Browser:</strong> ${browser}</p>
+      <p><strong>PWA Mode:</strong> ${isPWA ? 'Installed ✅' : 'Not installed'}</p>
+      <p><strong>Dark Mode:</strong> ${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Enabled' : 'Disabled'}</p>
+    `;
+    
+    // Register service worker for offline functionality
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered for offline functionality'))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+  </script>
+</body>
+</html>
