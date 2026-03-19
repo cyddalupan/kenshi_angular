@@ -1,104 +1,251 @@
-# Admin Dashboard for TOYBITS
+# Kenshi Angular PWA - Admin Dashboard
 
-A simple admin dashboard application that connects to the WisdomVault database.
+A Progressive Web App (PWA) built with Ionic + Angular + Tailwind CSS for the Kenshi project. This serves as the admin dashboard that will connect to the WisdomVault API.
 
-## 🚀 Quick Start
+## 🚀 Live Demo
+**https://admin.toybits.cloud/**
 
-1. **Access the dashboard:** `https://admin.toybits.cloud/`
-2. **Admin login:** `https://admin.toybits.cloud/admin.php`
-   - Username: `admin`
-   - Password: `toybits123`
+## 📱 Features
 
-## 📁 File Structure
+### ✅ PWA Features
+- **Installable** on iOS, Android, Windows, macOS
+- **Offline Support** via service worker
+- **Native-like Experience** with splash screens
+- **Push Notifications** ready
+- **Theme Color** adaptation
+
+### ✅ Design Features
+- **Ionic Framework** for mobile-optimized UI
+- **Tailwind CSS** for utility-first styling
+- **Dark/Light Mode** with automatic switching
+- **Responsive Design** for all screen sizes
+- **Bottom Navigation** tabs (Home, Components, Settings)
+
+### ✅ Technical Features
+- **Angular-based** architecture
+- **Service Worker** for offline caching
+- **Device Detection** for platform-specific features
+- **Theme Toggle** with system preference detection
+- **HTTPS** with Let's Encrypt SSL
+
+## 🏗️ Architecture
 
 ```
-/var/www/admin.toybits.cloud/
-├── public/
-│   ├── index.php          # Main dashboard (public)
-│   ├── admin.php          # Admin dashboard (login required)
-│   └── db-test.php        # Database connection test
-└── README.md
+admin.toybits.cloud/
+├── public/                    # Compiled PWA files
+│   ├── index.html            # Main entry point
+│   ├── manifest.webmanifest  # PWA manifest
+│   ├── sw.js                # Service worker
+│   └── icons/               # All platform icons
+├── angular-skeleton/         # Angular source code
+│   ├── src/
+│   │   ├── app/             # Angular components
+│   │   ├── environments/    # Configuration
+│   │   └── styles.scss     # Global styles
+│   └── package.json         # Dependencies
+└── README.md                # This documentation
 ```
 
-## 🔗 URLs
+## 🔗 WisdomVault API Integration
 
-- **Main Dashboard:** `https://admin.toybits.cloud/`
-- **Admin Login:** `https://admin.toybits.cloud/admin.php`
-- **Database Test:** `https://admin.toybits.cloud/db-test.php`
+### Planned Integration Points
 
-## 🔐 Security Notes
+1. **Authentication**
+   - Connect to WisdomVault Django backend
+   - JWT token-based authentication
+   - User session management
 
-1. **SSL Certificate:** Currently using abroad.toybits.cloud's certificate (will show warning)
-2. **Admin Credentials:** Hardcoded for demo purposes
-3. **Database Access:** Read-only connection to WisdomVault database
-4. **Session Management:** Basic PHP sessions
+2. **Data Management**
+   - CRUD operations via REST API
+   - Real-time updates via WebSocket
+   - File upload/download
 
-## 🗄️ Database Connection
+3. **Admin Features**
+   - User management dashboard
+   - Content moderation tools
+   - Analytics and reporting
+   - System configuration
 
-The app connects to the WisdomVault MySQL database:
+### API Endpoints (To Be Implemented)
 
-```php
-$host = 'localhost';
-$dbname = 'wisdomvault_db';
-$username = 'cleddrence';
-$password = 'limangminutolangsapatna';
+```typescript
+// Example API service structure
+const WISDOMVAULT_API = {
+  BASE_URL: 'https://wisdomvault.welfareph.com/api/',
+  ENDPOINTS: {
+    AUTH: {
+      LOGIN: 'auth/login/',
+      REGISTER: 'auth/register/',
+      REFRESH: 'auth/refresh/',
+    },
+    USERS: {
+      LIST: 'users/',
+      DETAIL: 'users/{id}/',
+      UPDATE: 'users/{id}/',
+    },
+    CONTENT: {
+      POSTS: 'posts/',
+      COMMENTS: 'comments/',
+      MEDIA: 'media/',
+    }
+  }
+};
 ```
 
-## 📊 Features
+## 🛠️ Development Setup
 
-### 1. **Public Dashboard** (`index.php`)
-- System status display
-- HTTPS verification
-- Server information
-- Responsive design
+### Prerequisites
+- Node.js 18+ and npm
+- Angular CLI 17+
+- Git
 
-### 2. **Admin Dashboard** (`admin.php`)
-- Login-protected area
-- Facebook pages overview
-- Recent chat messages
-- Database statistics
-- System information
+### Installation
+```bash
+# Clone the repository
+git clone git@github.com:cyddalupan/kenshi_angular.git
+cd kenshi_angular
 
-### 3. **Database Test** (`db-test.php`)
-- Connection verification
-- Table listing with counts
-- Facebook pages display
-- Chat statistics
+# Navigate to Angular source
+cd angular-skeleton
 
-## 🛠️ Apache Configuration
+# Install dependencies
+npm install
 
-- **HTTP Config:** `/etc/apache2/sites-available/admin.toybits.cloud.conf`
-- **HTTPS Config:** `/etc/apache2/sites-available/admin.toybits.cloud-le-ssl.conf`
-- **Document Root:** `/var/www/admin.toybits.cloud/public`
+# Start development server
+ng serve
+```
 
-## 🔧 Future Enhancements
+### Building for Production
+```bash
+# Build the Angular app
+ng build --configuration production
 
-1. **Proper SSL Certificate:** Get Let's Encrypt certificate for admin.toybits.cloud
-2. **User Management:** Real user authentication system
-3. **Write Access:** Safe database modification capabilities
-4. **API Endpoints:** REST API for external integration
-5. **Advanced Analytics:** Charts and graphs for business insights
+# The built files will be in dist/ directory
+# Copy to public/ directory for serving
+cp -r dist/browser/* ../public/
+```
 
-## 📝 Notes
+## 🌐 Deployment
 
-- This is a demo application showing database connectivity
-- All database operations are currently read-only
-- The admin credentials are for demonstration only
-- The app demonstrates how to create a separate admin interface for WisdomVault
+### Current Deployment
+- **Server**: DigitalOcean Ubuntu 22.04
+- **Web Server**: Apache 2.4
+- **SSL**: Let's Encrypt (auto-renewing)
+- **Domain**: admin.toybits.cloud
 
-## 🚨 Troubleshooting
+### Apache Configuration
+```apache
+# /etc/apache2/sites-available/admin.toybits.cloud-le-ssl.conf
+<VirtualHost *:443>
+    ServerName admin.toybits.cloud
+    DocumentRoot /var/www/admin.toybits.cloud/public
+    
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/admin.toybits.cloud/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/admin.toybits.cloud/privkey.pem
+    
+    # PWA headers
+    Header always set Service-Worker-Allowed "/"
+    Header always set X-Content-Type-Options "nosniff"
+</VirtualHost>
+```
 
-If the database connection fails:
+## 🎨 Theme System
 
-1. Check if MySQL is running: `systemctl status mysql`
-2. Verify database credentials match WisdomVault's `.env` file
-3. Test connection manually: `mysql -u cleddrence -p wisdomvault_db`
-4. Check Apache error logs: `tail -f /var/log/apache2/admin_error.log`
+### Light Mode
+- Background: Ionic default light theme
+- Primary Color: `#4f46e5` (purple)
+- Text: Dark for readability
+- Theme Color: `#4f46e5`
+
+### Dark Mode
+- Background: `#121212` (true dark)
+- Primary Color: `#818cf8` (light purple)
+- Text: White for contrast
+- Theme Color: `#121212`
+
+### Theme Toggle
+- Click moon/sun icon in top-right corner
+- Automatically follows system preference
+- Updates meta theme-color for browser/OS
+
+## 📱 PWA Installation
+
+### iOS
+1. Open in Safari
+2. Tap Share button
+3. Tap "Add to Home Screen"
+
+### Android
+1. Open in Chrome
+2. Tap menu (3 dots)
+3. Tap "Install app" or "Add to Home Screen"
+
+### Windows/macOS
+1. Open in Chrome/Edge
+2. Click install icon in address bar
+3. Confirm installation
+
+## 🔧 Service Worker
+
+### Caching Strategy
+- **App Shell**: Cache-first for core files
+- **API Calls**: Network-first with cache fallback
+- **Images**: Cache-first with expiration
+
+### Cache Management
+```javascript
+// Clear cache manually
+navigator.serviceWorker.getRegistration()
+  .then(registration => {
+    if (registration) {
+      return caches.delete('angular-ionic-pwa-skeleton-v3-skeleton-icons');
+    }
+  })
+```
+
+## 📊 Project Status
+
+### ✅ Completed
+- [x] PWA setup with all icons
+- [x] HTTPS configuration
+- [x] Theme toggle (dark/light mode)
+- [x] Mobile-optimized design
+- [x] Service worker for offline use
+- [x] Code pushed to GitHub repository
+
+### 🔄 In Progress
+- [ ] WisdomVault API integration
+- [ ] Authentication system
+- [ ] Admin dashboard features
+- [ ] Real-time updates
+
+### 📋 Planned
+- [ ] User management interface
+- [ ] Content moderation tools
+- [ ] Analytics dashboard
+- [ ] Push notifications
+- [ ] Multi-language support
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+This project is part of the TOYBITS Business Process Automation as a Service (BPAaaS).
 
 ## 📞 Support
 
-For issues with this admin dashboard, check:
-- Apache configuration files
-- Database connectivity
-- PHP error logs
-- SSL certificate configuration
+For issues and questions:
+- GitHub Issues: [cyddalupan/kenshi_angular](https://github.com/cyddalupan/kenshi_angular/issues)
+- Email: support@toybits.cloud
+
+---
+
+**Last Updated**: 2026-03-19  
+**Version**: 1.0.0  
+**Live URL**: https://admin.toybits.cloud/
