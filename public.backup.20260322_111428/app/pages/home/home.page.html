@@ -1,0 +1,215 @@
+<ion-content class="ion-padding" [fullscreen]="true">
+  <!-- Native Header -->
+  <div class="native-header flex items-center justify-between px-4 py-3">
+    <div class="flex items-center">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mr-3">
+        <span class="text-white font-bold">T</span>
+      </div>
+      <h1 class="text-lg font-semibold">ToyBits</h1>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <button (click)="onThemeToggle()" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between p-4 native-card">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center mr-3">
+          <span class="text-white text-xl">{{ getDeviceIcon() }}</span>
+        </div>
+        <div>
+          <h2 class="font-semibold">ToyBits PWA</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ deviceName }} • {{ browserName }}
+            <span *ngIf="isStandalone" class="ml-2 text-green-600 dark:text-green-400">• Installed</span>
+          </p>
+        </div>
+      </div>
+      <div *ngIf="isStandalone" class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
+        Installed
+      </div>
+    </div>
+  </div>
+
+  <!-- Installation Card (Hidden when installed/skipped) -->
+  <div *ngIf="showInstallCard" class="mb-6 native-card p-5 slide-up">
+    <div class="flex items-start mb-4">
+      <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-4">
+        <span class="text-2xl">{{ getDeviceIcon() }}</span>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold mb-1">Install as App</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
+          Get the native app experience with offline access and push notifications.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Device-specific instructions -->
+    <div class="space-y-3 mb-4">
+      <div *ngFor="let instruction of installInstructions; let i = index" class="flex items-start">
+        <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+          {{ i + 1 }}
+        </div>
+        <div>
+          <p class="font-medium">{{ instruction }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Install Button (when supported) -->
+    <button *ngIf="canInstall" 
+            (click)="onInstallClick()"
+            class="w-full py-3 native-button font-semibold text-center mb-3">
+      {{ getInstallButtonText() }}
+    </button>
+    
+    <div class="text-center">
+      <button (click)="onSkipClick()" class="text-blue-600 dark:text-blue-400 text-sm font-medium">
+        Skip for now
+      </button>
+    </div>
+  </div>
+
+  <!-- Already Installed Message -->
+  <div *ngIf="showInstalledMessage" class="native-card p-5 text-center slide-up">
+    <div class="text-4xl mb-4">🎉</div>
+    <h3 class="text-xl font-semibold mb-2">Welcome to ToyBits!</h3>
+    <p class="text-gray-600 dark:text-gray-400 mb-4">
+      You're using the ToyBits app. Enjoy the native experience with offline access and push notifications.
+    </p>
+    <button (click)="takeAppTour()" class="py-2 px-4 bg-blue-600 text-white rounded-lg font-medium">
+      Take App Tour
+    </button>
+  </div>
+
+  <!-- App Features (Shown when installed or skipped) -->
+  <div *ngIf="showAppFeatures && !showInstalledMessage" class="space-y-6">
+    <!-- Dashboard -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="native-card p-4">
+          <div class="text-2xl mb-2">📊</div>
+          <h3 class="font-medium mb-1">Analytics</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">View business metrics</p>
+        </div>
+        <div class="native-card p-4">
+          <div class="text-2xl mb-2">💰</div>
+          <h3 class="font-medium mb-1">Revenue</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Track income streams</p>
+        </div>
+        <div class="native-card p-4">
+          <div class="text-2xl mb-2">👥</div>
+          <h3 class="font-medium mb-1">Team</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Manage your team</p>
+        </div>
+        <div class="native-card p-4">
+          <div class="text-2xl mb-2">📈</div>
+          <h3 class="font-medium mb-1">Growth</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Monitor progress</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="native-card p-4">
+      <h3 class="font-semibold mb-3">Recent Activity</h3>
+      <div class="space-y-3">
+        <div class="flex items-center">
+          <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+            <span class="text-green-600 dark:text-green-400">✓</span>
+          </div>
+          <div class="flex-1">
+            <p class="font-medium">Task completed</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">2 minutes ago</p>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-3">
+            <span class="text-blue-600 dark:text-blue-400">💬</span>
+          </div>
+          <div class="flex-1">
+            <p class="font-medium">New message</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">10 minutes ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="native-card p-4">
+      <h3 class="font-semibold mb-3">Quick Actions</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button (click)="showDemo('tasks')" class="py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-xl text-center">
+          <span class="text-xl mb-1 block">➕</span>
+          <span class="text-sm font-medium">New Task</span>
+        </button>
+        <button (click)="showDemo('messages')" class="py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-xl text-center">
+          <span class="text-xl mb-1 block">📧</span>
+          <span class="text-sm font-medium">Send Email</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo App Interface -->
+  <div *ngIf="showAppFeatures" class="mt-6">
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Sample App Interface</h2>
+        <span class="px-3 py-1 bg-white/10 rounded-full text-sm">DEMO</span>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button (click)="showDemo('dashboard')" class="p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 transform hover:scale-105">
+          <div class="text-3xl mb-2">📊</div>
+          <div class="font-medium">Dashboard</div>
+        </button>
+        
+        <button (click)="showDemo('tasks')" class="p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 transform hover:scale-105">
+          <div class="text-3xl mb-2">✅</div>
+          <div class="font-medium">Tasks</div>
+        </button>
+        
+        <button (click)="showDemo('messages')" class="p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 transform hover:scale-105">
+          <div class="text-3xl mb-2">💬</div>
+          <div class="font-medium">Messages</div>
+        </button>
+        
+        <button (click)="showDemo('settings')" class="p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 transform hover:scale-105">
+          <div class="text-3xl mb-2">⚙️</div>
+          <div class="font-medium">Settings</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Native Tab Bar (Only shown when installed/skipped) -->
+<ion-footer *ngIf="showAppFeatures" class="ion-no-border">
+  <div class="native-tab-bar flex items-center justify-around">
+    <button class="flex flex-col items-center justify-center py-2">
+      <span class="text-2xl mb-1">🏠</span>
+      <span class="text-xs">Home</span>
+    </button>
+    <button (click)="showDemo('tasks')" class="flex flex-col items-center justify-center py-2">
+      <span class="text-2xl mb-1">✅</span>
+      <span class="text-xs">Tasks</span>
+    </button>
+    <button (click)="showDemo('dashboard')" class="flex flex-col items-center justify-center py-2">
+      <span class="text-2xl mb-1">📊</span>
+      <span class="text-xs">Stats</span>
+    </button>
+    <button (click)="showDemo('settings')" class="flex flex-col items-center justify-center py-2">
+      <span class="text-2xl mb-1">👤</span>
+      <span class="text-xs">Profile</span>
+    </button>
+  </div>
+</ion-footer>

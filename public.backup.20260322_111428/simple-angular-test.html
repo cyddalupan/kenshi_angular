@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Angular Test</title>
+    <script>
+        // Test if Angular is loaded
+        function checkAngular() {
+            const results = document.getElementById('results');
+            
+            // Check 1: Is Angular defined?
+            if (typeof angular !== 'undefined') {
+                results.innerHTML += '<p style="color: green;">✅ Angular is loaded (global angular object)</p>';
+            } else {
+                results.innerHTML += '<p style="color: red;">❌ Angular NOT loaded (no global angular object)</p>';
+            }
+            
+            // Check 2: Is Zone.js loaded? (required for Angular)
+            if (typeof Zone !== 'undefined') {
+                results.innerHTML += '<p style="color: green;">✅ Zone.js is loaded</p>';
+            } else {
+                results.innerHTML += '<p style="color: red;">❌ Zone.js NOT loaded (Angular wont work)</p>';
+            }
+            
+            // Check 3: Check for app-root content
+            setTimeout(() => {
+                const appRoot = document.querySelector('app-root');
+                if (appRoot && appRoot.children.length > 0) {
+                    results.innerHTML += '<p style="color: green;">✅ app-root has content (' + appRoot.children.length + ' children)</p>';
+                } else if (appRoot) {
+                    results.innerHTML += '<p style="color: orange;">⚠️ app-root exists but is empty (no children)</p>';
+                } else {
+                    results.innerHTML += '<p style="color: red;">❌ No app-root element found</p>';
+                }
+            }, 2000);
+            
+            // Check 4: Look for Angular errors in console
+            const originalError = console.error;
+            const angularErrors = [];
+            console.error = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('Angular') || message.includes('NG') || message.includes('zone')) {
+                    angularErrors.push(message);
+                }
+                originalError.apply(console, args);
+            };
+            
+            setTimeout(() => {
+                if (angularErrors.length > 0) {
+                    results.innerHTML += '<p style="color: red;">❌ Found ' + angularErrors.length + ' Angular errors in console</p>';
+                    angularErrors.forEach(err => {
+                        results.innerHTML += '<p style="color: red; font-size: 12px; margin-left: 20px;">' + err.substring(0, 100) + '...</p>';
+                    });
+                } else {
+                    results.innerHTML += '<p style="color: green;">✅ No Angular errors in console</p>';
+                }
+            }, 3000);
+        }
+        
+        window.onload = checkAngular;
+    </script>
+</head>
+<body>
+    <h1>Simple Angular Test</h1>
+    <p>This page tests if Angular is actually loading and running.</p>
+    
+    <div id="results">
+        <h2>Test Results:</h2>
+    </div>
+    
+    <h2>Load the actual Angular app:</h2>
+    <button onclick="window.location.href='/'">Load Main App</button>
+    
+    <h2>Debug Info:</h2>
+    <pre id="debug"></pre>
+    
+    <script>
+        // Load the actual Angular scripts
+        const scripts = [
+            'runtime.3e5ce1b38fb398e6.js',
+            'polyfills.a74359f16197e9f4.js', 
+            'main.8eed74eb3d9c7e97.js'
+        ];
+        
+        scripts.forEach(src => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.type = 'module';
+            document.body.appendChild(script);
+            console.log('Loading script:', src);
+        });
+        
+        // Add debug info
+        setTimeout(() => {
+            document.getElementById('debug').textContent = 
+                'Scripts loaded: ' + scripts.length + '\n' +
+                'Current time: ' + new Date().toISOString() + '\n' +
+                'User agent: ' + navigator.userAgent;
+        }, 1000);
+    </script>
+</body>
+</html>

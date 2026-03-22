@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Angular Execution Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Angular Execution Test</h1>
+    
+    <div id="results">
+        <h2>Test Results:</h2>
+        
+        <div id="test1">
+            <h3>1. JavaScript Loading:</h3>
+            <p id="js-status">Testing...</p>
+        </div>
+        
+        <div id="test2">
+            <h3>2. Angular App Root:</h3>
+            <p id="angular-status">Testing...</p>
+        </div>
+        
+        <div id="test3">
+            <h3>3. Console Errors:</h3>
+            <p id="console-status">Testing...</p>
+        </div>
+        
+        <div id="test4">
+            <h3>4. Network Resources:</h3>
+            <p id="network-status">Testing...</p>
+        </div>
+    </div>
+    
+    <h2>Debug Information:</h2>
+    <pre id="debug-info"></pre>
+    
+    <script>
+        const debugInfo = document.getElementById('debug-info');
+        const results = [];
+        
+        // Test 1: JavaScript Loading
+        try {
+            document.getElementById('js-status').innerHTML = '<span class="success">✅ JavaScript is enabled</span>';
+            results.push('JS: OK');
+        } catch (e) {
+            document.getElementById('js-status').innerHTML = '<span class="error">❌ JavaScript error: ' + e.message + '</span>';
+            results.push('JS: ERROR');
+        }
+        
+        // Test 2: Angular App Root
+        setTimeout(() => {
+            const appRoot = document.querySelector('app-root');
+            if (appRoot) {
+                document.getElementById('angular-status').innerHTML = '<span class="success">✅ Found &lt;app-root&gt; element</span>';
+                results.push('Angular: FOUND');
+                
+                // Check if Angular has hydrated
+                if (appRoot.children.length > 0) {
+                    document.getElementById('angular-status').innerHTML += '<br><span class="success">✅ Angular has content (hydrated)</span>';
+                    results.push('Angular: HYDRATED');
+                } else {
+                    document.getElementById('angular-status').innerHTML += '<br><span class="warning">⚠️ Angular element is empty (not hydrated)</span>';
+                    results.push('Angular: EMPTY');
+                }
+            } else {
+                document.getElementById('angular-status').innerHTML = '<span class="error">❌ No &lt;app-root&gt; element found</span>';
+                results.push('Angular: NOT FOUND');
+            }
+        }, 1000);
+        
+        // Test 3: Console Errors (simulate)
+        const originalConsoleError = console.error;
+        const errors = [];
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            originalConsoleError.apply(console, args);
+        };
+        
+        // Test 4: Check main.js loading
+        setTimeout(() => {
+            const scripts = Array.from(document.querySelectorAll('script[src*="main"]'));
+            if (scripts.length > 0) {
+                document.getElementById('network-status').innerHTML = '<span class="success">✅ Main.js script tag found</span>';
+                results.push('Main.js: FOUND');
+                
+                // Check if it loaded
+                const mainScript = scripts[0];
+                mainScript.onerror = function() {
+                    document.getElementById('network-status').innerHTML += '<br><span class="error">❌ Main.js failed to load</span>';
+                    results.push('Main.js: LOAD ERROR');
+                };
+                
+                // Check after 2 seconds
+                setTimeout(() => {
+                    if (!errors.some(e => e.includes('main') || e.includes('.js'))) {
+                        document.getElementById('network-status').innerHTML += '<br><span class="success">✅ No loading errors detected</span>';
+                        results.push('Main.js: LOADED OK');
+                    }
+                }, 2000);
+            } else {
+                document.getElementById('network-status').innerHTML = '<span class="error">❌ No main.js script found</span>';
+                results.push('Main.js: NOT FOUND');
+            }
+        }, 500);
+        
+        // Collect debug info
+        setTimeout(() => {
+            debugInfo.textContent = `Debug Information:
+URL: ${window.location.href}
+User Agent: ${navigator.userAgent}
+Platform: ${navigator.platform}
+Results: ${results.join(', ')}
+Console Errors: ${errors.length > 0 ? errors.join('\\n') : 'None'}
+Page Elements:
+- app-root: ${document.querySelector('app-root') ? 'Found' : 'Not found'}
+- app-root children: ${document.querySelector('app-root') ? document.querySelector('app-root').children.length : 'N/A'}
+- Scripts with "main": ${document.querySelectorAll('script[src*="main"]').length}
+            `;
+        }, 3000);
+    </script>
+</body>
+</html>

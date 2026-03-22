@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Capture Console Errors</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: monospace; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Console Error Capture</h1>
+    <p>This page loads the Angular app and captures all console messages.</p>
+    
+    <button onclick="startCapture()">Start Capture</button>
+    <button onclick="clearLogs()">Clear Logs</button>
+    
+    <div id="logs"></div>
+    
+    <script>
+        const logsElement = document.getElementById('logs');
+        const logs = [];
+        
+        // Capture all console methods
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        function captureConsole(method, level) {
+            return function(...args) {
+                // Call original
+                originalConsole[method].apply(console, args);
+                
+                // Capture
+                const message = args.map(arg => 
+                    typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                ).join(' ');
+                
+                logs.push({ level, message, time: new Date().toISOString() });
+                
+                // Display
+                const logElement = document.createElement('div');
+                logElement.className = 'log ' + level;
+                logElement.textContent = `[${level.toUpperCase()}] ${message.substring(0, 200)}`;
+                logsElement.appendChild(logElement);
+            };
+        }
+        
+        // Override console methods
+        console.log = captureConsole('log', 'info');
+        console.error = captureConsole('error', 'error');
+        console.warn = captureConsole('warn', 'warning');
+        console.info = captureConsole('info', 'info');
+        
+        function startCapture() {
+            logsElement.innerHTML = '<p>Starting capture... Loading Angular app...</p>';
+            
+            // Load Angular app
+            const appRoot = document.createElement('app-root');
+            document.body.appendChild(appRoot);
+            
+            // Load Angular scripts
+            const scripts = [
+                'runtime.3e5ce1b38fb398e6.js',
+                'polyfills.a74359f16197e9f4.js',
+                'main.8eed74eb3d9c7e97.js'
+            ];
+            
+            scripts.forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.type = 'module';
+                script.onerror = (e) => {
+                    console.error('Failed to load script:', src, e);
+                };
+                document.body.appendChild(script);
+            });
+            
+            // Check Angular bootstrap
+            setTimeout(() => {
+                console.log('Checking Angular bootstrap...');
+                
+                // Check if app-root has content
+                const appRoot = document.querySelector('app-root');
+                if (appRoot) {
+                    console.log('app-root found, children:', appRoot.children.length);
+                    if (appRoot.children.length === 0) {
+                        console.error('app-root is EMPTY - Angular not bootstrapped');
+                    }
+                } else {
+                    console.error('app-root NOT FOUND');
+                }
+                
+                // Check for Angular global
+                if (typeof ng !== 'undefined') {
+                    console.log('Angular (ng) global object found');
+                } else {
+                    console.warn('Angular (ng) global object NOT found');
+                }
+            }, 3000);
+        }
+        
+        function clearLogs() {
+            logsElement.innerHTML = '';
+            logs.length = 0;
+        }
+        
+        // Auto-start after 1 second
+        setTimeout(startCapture, 1000);
+    </script>
+</body>
+</html>

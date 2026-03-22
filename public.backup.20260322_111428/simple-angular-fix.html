@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Angular Fix</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Simple Angular Test</h1>
+    
+    <div id="status">Testing Angular...</div>
+    
+    <app-root>
+        <div style="padding: 20px; background: #f0f0f0; border-radius: 10px;">
+            <h2>Angular App Root</h2>
+            <p>If you see this, Angular hasn't bootstrapped yet.</p>
+            <p>Check browser console for errors.</p>
+        </div>
+    </app-root>
+    
+    <script>
+        // Test 1: Check if scripts load
+        console.log('Testing Angular load...');
+        
+        // Load Angular scripts
+        const scripts = [
+            'runtime.3e5ce1b38fb398e6.js',
+            'polyfills.a74359f16197e9f4.js', 
+            'main.8eed74eb3d9c7e97.js'
+        ];
+        
+        let loaded = 0;
+        scripts.forEach(src => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.type = 'module';
+            script.onload = () => {
+                loaded++;
+                console.log(`✅ Loaded: ${src}`);
+                if (loaded === scripts.length) {
+                    document.getElementById('status').innerHTML = 
+                        '<span class="success">✅ All Angular scripts loaded</span>';
+                    setTimeout(checkAngular, 1000);
+                }
+            };
+            script.onerror = () => {
+                console.error(`❌ Failed to load: ${src}`);
+                document.getElementById('status').innerHTML = 
+                    `<span class="error">❌ Failed to load: ${src}</span>`;
+            };
+            document.head.appendChild(script);
+        });
+        
+        function checkAngular() {
+            const appRoot = document.querySelector('app-root');
+            if (appRoot && appRoot.children.length > 0) {
+                console.log('✅ Angular app is rendering!');
+                document.getElementById('status').innerHTML = 
+                    '<span class="success">✅ Angular app is rendering!</span>';
+            } else {
+                console.log('❌ Angular app not rendering');
+                document.getElementById('status').innerHTML = 
+                    '<span class="error">❌ Angular app not rendering (check console)</span>';
+            }
+        }
+        
+        // Listen for errors
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.message, e.filename, e.lineno);
+            document.getElementById('status').innerHTML += 
+                `<br><span class="error">❌ Error: ${e.message}</span>`;
+        });
+    </script>
+</body>
+</html>

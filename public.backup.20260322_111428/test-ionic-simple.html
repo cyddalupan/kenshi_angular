@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ionic Simple Test</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+</head>
+<body>
+    <h1>Ionic Direct Test</h1>
+    
+    <!-- Test Ionic button directly -->
+    <ion-button>Test Ionic Button</ion-button>
+    
+    <p>If you see a styled button above, Ionic CSS is loading.</p>
+    
+    <script type="module">
+        import { defineCustomElements } from 'https://cdn.jsdelivr.net/npm/@ionic/core/loader/index.es2017.js';
+        
+        // Define Ionic custom elements
+        defineCustomElements(window).then(() => {
+            console.log('✅ Ionic custom elements defined');
+            
+            // Create a button programmatically
+            const button = document.createElement('ion-button');
+            button.textContent = 'Programmatic Button';
+            button.color = 'primary';
+            document.body.appendChild(button);
+            
+            console.log('✅ Ionic button created programmatically');
+        }).catch(err => {
+            console.error('❌ Failed to load Ionic:', err);
+        });
+    </script>
+</body>
+</html>

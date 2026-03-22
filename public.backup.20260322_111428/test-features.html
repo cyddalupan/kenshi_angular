@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWA Features Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background: #d4edda; border-color: #c3e6cb; }
+        .fail { background: #f8d7da; border-color: #f5c6cb; }
+        .loading { background: #fff3cd; border-color: #ffeaa7; }
+    </style>
+</head>
+<body>
+    <h1>PWA Features Test - admin.toybits.cloud</h1>
+    
+    <div class="test loading" id="test1">
+        <h3>Test 1: Angular App Loading</h3>
+        <p>Checking if Angular app loads...</p>
+    </div>
+    
+    <div class="test loading" id="test2">
+        <h3>Test 2: Installation Instructions</h3>
+        <p>Checking for "Install as Native App" feature...</p>
+    </div>
+    
+    <div class="test loading" id="test3">
+        <h3>Test 3: Theme Toggle</h3>
+        <p>Checking for dark/light theme toggle...</p>
+    </div>
+    
+    <div class="test loading" id="test4">
+        <h3>Test 4: Tab Navigation</h3>
+        <p>Checking for bottom tab bar...</p>
+    </div>
+    
+    <div class="test" id="test5">
+        <h3>Test 5: Direct HTML Check</h3>
+        <pre id="html-check"></pre>
+    </div>
+    
+    <script>
+        // Test 1: Check if Angular app loads
+        setTimeout(() => {
+            const appRoot = document.querySelector('app-root');
+            if (appRoot) {
+                document.getElementById('test1').className = 'test pass';
+                document.getElementById('test1').innerHTML = '<h3>✅ Test 1: Angular App Loading</h3><p>Angular app is loading with app-root element</p>';
+            } else {
+                document.getElementById('test1').className = 'test fail';
+                document.getElementById('test1').innerHTML = '<h3>❌ Test 1: Angular App Loading</h3><p>app-root element not found</p>';
+            }
+        }, 2000);
+        
+        // Test 5: Check HTML content
+        fetch('/')
+            .then(response => response.text())
+            .then(html => {
+                const checks = {
+                    'Install as Native App': html.includes('Install as Native App'),
+                    'theme-toggle': html.includes('theme') || html.includes('moon') || html.includes('sun'),
+                    'ion-tab-bar': html.includes('ion-tab-bar'),
+                    'ion-tab-button': html.includes('ion-tab-button')
+                };
+                
+                let result = 'HTML Content Checks:\n';
+                for (const [feature, found] of Object.entries(checks)) {
+                    result += `${found ? '✅' : '❌'} ${feature}: ${found ? 'Found' : 'Not found'}\n`;
+                }
+                
+                document.getElementById('html-check').textContent = result;
+                
+                // Update test statuses based on HTML checks
+                if (checks['Install as Native App']) {
+                    document.getElementById('test2').className = 'test pass';
+                    document.getElementById('test2').innerHTML = '<h3>✅ Test 2: Installation Instructions</h3><p>"Install as Native App" found in HTML</p>';
+                } else {
+                    document.getElementById('test2').className = 'test fail';
+                    document.getElementById('test2').innerHTML = '<h3>❌ Test 2: Installation Instructions</h3><p>"Install as Native App" not found in HTML</p>';
+                }
+                
+                if (checks['theme-toggle']) {
+                    document.getElementById('test3').className = 'test pass';
+                    document.getElementById('test3').innerHTML = '<h3>✅ Test 3: Theme Toggle</h3><p>Theme toggle references found in HTML</p>';
+                } else {
+                    document.getElementById('test3').className = 'test fail';
+                    document.getElementById('test3').innerHTML = '<h3>❌ Test 3: Theme Toggle</h3><p>No theme toggle references found in HTML</p>';
+                }
+                
+                if (checks['ion-tab-bar'] && checks['ion-tab-button']) {
+                    document.getElementById('test4').className = 'test pass';
+                    document.getElementById('test4').innerHTML = '<h3>✅ Test 4: Tab Navigation</h3><p>Tab navigation elements found in HTML</p>';
+                } else {
+                    document.getElementById('test4').className = 'test fail';
+                    document.getElementById('test4').innerHTML = '<h3>❌ Test 4: Tab Navigation</h3><p>Tab navigation elements not found in HTML</p>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('html-check').textContent = 'Error fetching HTML: ' + error;
+            });
+    </script>
+</body>
+</html>

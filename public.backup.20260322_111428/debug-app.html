@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWA Debug - Check Console</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #console { background: #000; color: #0f0; padding: 20px; height: 300px; overflow-y: auto; font-family: monospace; }
+        .error { color: #f00; }
+        .success { color: #0f0; }
+        .warning { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>PWA Debug Console</h1>
+    <p>Loading Angular app and checking for errors...</p>
+    
+    <div id="console">
+        Starting debug...<br>
+    </div>
+    
+    <script>
+        const consoleDiv = document.getElementById('console');
+        
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : '';
+            consoleDiv.innerHTML += `<span class="${color}">[${time}] ${msg}</span><br>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        // Override console methods to capture logs
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+        
+        console.log = function(...args) {
+            originalConsole.log.apply(console, args);
+            log('LOG: ' + args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalConsole.error.apply(console, args);
+            log('ERROR: ' + args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalConsole.warn.apply(console, args);
+            log('WARN: ' + args.join(' '), 'warning');
+        };
+        
+        // Check if Angular is loaded
+        setTimeout(() => {
+            if (window.ng && window.ng.core) {
+                log('✅ Angular framework detected', 'success');
+            } else {
+                log('❌ Angular framework not detected', 'error');
+            }
+            
+            // Check for app-root
+            const appRoot = document.querySelector('app-root');
+            if (appRoot) {
+                log('✅ app-root element found', 'success');
+                
+                // Check app-root content
+                setTimeout(() => {
+                    if (appRoot.innerHTML && appRoot.innerHTML.trim().length > 0) {
+                        log('✅ app-root has content: ' + appRoot.innerHTML.substring(0, 100) + '...', 'success');
+                    } else {
+                        log('❌ app-root is empty', 'error');
+                    }
+                }, 1000);
+            } else {
+                log('❌ app-root element not found', 'error');
+            }
+        }, 1000);
+        
+        // Load the Angular app in an iframe
+        log('Loading Angular app in iframe...');
+        const iframe = document.createElement('iframe');
+        iframe.src = '/';
+        iframe.style.width = '100%';
+        iframe.style.height = '500px';
+        iframe.style.border = '1px solid #ccc';
+        document.body.appendChild(iframe);
+        
+        iframe.onload = function() {
+            log('✅ Iframe loaded successfully', 'success');
+            
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const iframeAppRoot = iframeDoc.querySelector('app-root');
+                
+                if (iframeAppRoot) {
+                    log('✅ Iframe: app-root found', 'success');
+                    
+                    // Check for features in iframe
+                    const iframeHtml = iframeDoc.body.innerHTML;
+                    const checks = {
+                        'Install text': iframeHtml.includes('Install'),
+                        'Theme toggle': iframeHtml.includes('theme') || iframeHtml.includes('moon') || iframeHtml.includes('sun'),
+                        'Tab bar': iframeHtml.includes('tab-bar') || iframeHtml.includes('tab-button')
+                    };
+                    
+                    for (const [feature, found] of Object.entries(checks)) {
+                        log(`${found ? '✅' : '❌'} ${feature}: ${found ? 'Found' : 'Not found'}`, found ? 'success' : 'error');
+                    }
+                } else {
+                    log('❌ Iframe: app-root not found', 'error');
+                }
+            } catch (e) {
+                log('❌ Cannot access iframe content (CORS): ' + e.message, 'error');
+            }
+        };
+        
+        iframe.onerror = function() {
+            log('❌ Iframe failed to load', 'error');
+        };
+    </script>
+</body>
+</html>

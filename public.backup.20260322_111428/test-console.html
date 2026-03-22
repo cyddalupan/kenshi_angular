@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Console Test</title>
+</head>
+<body>
+    <h1>JavaScript Console Test</h1>
+    <p>Open browser console (F12) to see if JavaScript is working.</p>
+    
+    <script>
+        console.log('Test script loaded successfully');
+        console.log('Angular should bootstrap here');
+        
+        // Check if Zone.js is loaded
+        if (window.Zone) {
+            console.log('✅ Zone.js is loaded:', window.Zone.current.name);
+        } else {
+            console.error('❌ Zone.js NOT loaded');
+        }
+        
+        // Check if Angular is loaded
+        if (window.ng) {
+            console.log('✅ Angular is loaded');
+        } else {
+            console.log('ℹ️ Angular not in window.ng (might be bundled)');
+        }
+        
+        // Check for errors
+        window.addEventListener('error', function(e) {
+            console.error('❌ JavaScript Error:', e.message, 'at', e.filename, 'line', e.lineno);
+        });
+    </script>
+    
+    <script src="runtime.3e5ce1b38fb398e6.js" type="module"></script>
+    <script src="polyfills.a74359f16197e9f4.js" type="module"></script>
+    <script src="main.8eed74eb3d9c7e97.js" type="module"></script>
+</body>
+</html>

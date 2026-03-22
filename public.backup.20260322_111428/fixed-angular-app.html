@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToyBits PWA - Fixed Angular App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-top: 60px;
+            padding-bottom: 70px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Content */
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Tabs */
+        .tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            z-index: 1000;
+        }
+        
+        .dark-mode .tabs {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+        
+        .tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+        
+        .tab.active {
+            color: #4f46e5;
+        }
+        
+        .dark-mode .tab.active {
+            color: #818cf8;
+        }
+        
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .dark-mode .card {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+        
+        .card-title {
+            color: #1e40af;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+        
+        .dark-mode .card-title {
+            color: #93c5fd;
+        }
+        
+        /* Button */
+        .button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button:hover {
+            background: #4338ca;
+        }
+        
+        .button-outline {
+            background: transparent;
+            color: #4f46e5;
+            border: 2px solid #4f46e5;
+        }
+        
+        .dark-mode .button-outline {
+            color: #818cf8;
+            border-color: #818cf8;
+        }
+        
+        .button-outline:hover {
+            background: rgba(79, 70, 229, 0.1);
+        }
+        
+        /* List */
+        .list {
+            list-style: none;
+        }
+        
+        .list-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .dark-mode .list-item {
+            border-color: #444;
+        }
+        
+        /* Badge */
+        .badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title" id="page-title">ToyBits PWA</div>
+        <button class="theme-toggle" id="theme-toggle">
+            <span id="theme-icon">🌙</span>
+        </button>
+    </div>
+    
+    <!-- Content -->
+    <div class="content">
+        <!-- Home Tab -->
+        <div class="tab-content active" id="home-tab">
+            <div class="card">
+                <h3 class="card-title">
+                    <span>📱</span>
+                    <span id="install-title">Install as Native App</span>
+                </h3>
+                
+                <div id="ios-instructions">
+                    <p><strong>⚠️ IMPORTANT: Must use Safari browser</strong></p>
+                    <ol>
+                        <li>Open in <strong>Safari</strong> (not Chrome)</li>
+                        <li>Tap the <strong>Share</strong> button <span style="color: #4f46e5;">⎋</span></li>
+                        <li>Scroll down to <strong>"Add to Home Screen"</strong></li>
+                        <li>Tap <strong>"Add"</strong> in top right</li>
+                        <li>Launch from home screen</li>
+                    </ol>
+                    <p><em>iOS only allows PWA installation via Safari browser</em></p>
+                </div>
+                
+                <div id="android-instructions" style="display: none;">
+                    <p><strong>📱 Install on Android (Use Chrome)</strong></p>
+                    <ol>
+                        <li>Open in <strong>Chrome</strong> browser</li>
+                        <li>Tap the three dots <strong>⋮</strong> in top right</li>
+                        <li>Select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></li>
+                        <li>Tap <strong>"Install"</strong> to confirm</li>
+                        <li>Launch from home screen</li>
+                    </ol>
+                </div>
+                
+                <div id="desktop-instructions" style="display: none;">
+                    <p><strong>💻 Install on Desktop</strong></p>
+                    <ol>
+                        <li>Use <strong>Chrome</strong> or <strong>Edge</strong> for best experience</li>
+                        <li>Look for install icon <strong>⎙</strong> in address bar</li>
+                        <li>Click <strong>"Install"</strong> when prompted</li>
+                        <li>App will open in its own window</li>
+                    </ol>
+                </div>
+                
+                <div style="margin-top: 20px; display: flex; gap: 12px;">
+                    <button class="button" id="install-button">
+                        <span>📱</span>
+                        <span>Install Now</span>
+                    </button>
+                    <button class="button button-outline" id="skip-button">
+                        Skip for Now
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">✨ App Features</h3>
+                <ul class="list">
+                    <li class="list-item">✅ Native app experience</li>
+                    <li class="list-item">✅ Dark/Light mode toggle</li>
+                    <li class="list-item">✅ Tab navigation</li>
+                    <li class="list-item">✅ Offline support</li>
+                    <li class="list-item">✅ Push notifications</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">📊 Device Status</h3>
+                <p><strong>Device:</strong> <span id="device-name">Detecting...</span></p>
+                <p><strong>Browser:</strong> <span id="browser-name">Detecting...</span></p>
+                <p><strong>PWA Mode:</strong> <span id="pwa-status">Checking...</span></p>
+                <p><strong>Service Worker:</strong> <span id="sw-status">Checking...</span></p>
+                <p><strong>Dark Mode:</strong> <span id="dark-mode-status">Checking...</span></p>
+            </div>
+        </div>
+        
+        <!-- Components Tab -->
+        <div class="tab-content" id="components-tab">
+            <div class="card">
+                <h3 class="card-title">🧩 Components</h3>
+                <p>This is the components page with example components.</p>
+                
+                <div style="margin-top: 20px;">
+                    <button class="button">Primary Button</button>
+                    <button class="button button-outline" style="margin-left: 12px;">Outline Button</button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div class="card" style="background: #f8fafc;">
+                        <h4>Example Card</h4>
+                        <p>This is an example card component with different styling.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings-tab">
+            <div class="card">
+                <h3 class="card-title">⚙️ Settings</h3>
+                
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #e5e7eb;">
+                        <div>
+                            <strong>Dark Mode</strong>
+                            <p style="font-size: 0.9rem; color: #6b7280;">Toggle dark/light theme</p>
+                        </div>
+                        <label style="position: relative; width: 50px; height: 26px;">
+                            <input type="checkbox" id="dark-mode-toggle" style="opacity: 0; width: 0; height: 0;">
+                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                            <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #e5e7eb;">
+                        <div>
+                            <strong>Notifications</strong>
+                            <p style="font-size: 0.9rem; color: #6b7280;">Enable push notifications</p>
+                        </div>
+                        <label style="position: relative; width: 50px; height: 26px;">
+                            <input type="checkbox" id="notifications-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4f46e5; transition: .4s; border-radius: 34px;"></span>
+                            <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 28px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0;">
+                        <div>
+                            <strong>Auto Sync</strong>
+                            <p style="font-size: 0.9rem; color: #6b7280;">Sync data automatically</p>
+                        </div>
+                        <label style="position: relative; width: 50px; height: 26px;">
+                            <input type="checkbox" id="auto-sync-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4f46e5; transition: .4s; border-radius: 34px;"></span>
+                            <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 28px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="button" style="background: #ef4444;">
+                        <span>🗑️</span>
+                        <span>Clear Cache</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <a href="#" class="tab active" data-tab="home">
+            <div class="tab-icon">🏠</div>
+            <div>Home</div>
+        </a>
+        <a href="#" class="tab" data-tab="components">
+            <div class="tab-icon">🧩</div>
+            <div>Components</div>
+        </a>
+        <a href="#" class="tab" data-tab="settings">
+            <div class="tab-icon">⚙️</div>
+            <div>Settings</div>
+        </a>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const darkModeStatus = document.getElementById('dark-mode-status');
+        let isDarkMode = false;
+        
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
+            darkModeToggle.checked = isDarkMode;
+            darkModeStatus.textContent = isDarkMode ? '✅ Enabled' : '❌ Disabled';
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        });
+        
+        darkModeToggle.addEventListener('change', () => {
+            isDarkMode = darkModeToggle.checked;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
+            darkModeStatus.textContent = isDarkMode ? '✅ Enabled' : '❌ Disabled';
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            isDarkMode = true;
+            document.body.classList.add('dark-mode');
+            themeIcon.textContent = '☀️';
+            darkModeToggle.checked = true;
+            darkModeStatus.textContent = '✅ Enabled';
+        } else {
+            darkModeStatus.textContent = '❌ Disabled';
+        }
+        
+        // Tab Navigation
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const pageTitle = document.getElementById('page-title');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+                
+                // Update page title
+                const titles = {
+                    'home': 'ToyBits PWA',
+                    'components': 'Components',
+                    '
