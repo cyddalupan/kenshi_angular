@@ -11,7 +11,9 @@ export class DeviceService {
   private browserType: BrowserType = 'other';
   private isStandalone = false;
 
-  constructor() {}
+  constructor() {
+    this.detectDevice();
+  }
 
   detectDevice(): void {
     this.detectDeviceType();

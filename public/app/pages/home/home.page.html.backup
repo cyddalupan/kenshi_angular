@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar style="--background: linear-gradient(135deg, #4f46e5, #7c3aed); --color: white;">
-    <ion-title style="font-size: 18px; font-weight: 600;">{{ currentTab === 'home' ? 'ToyBits Admin' : currentTab === 'components' ? 'Components' : 'Settings' }}</ion-title>
+    <ion-title style="font-size: 18px; font-weight: 600;">{{ currentTab === 'home' ? 'ToyBits PWA' : currentTab === 'components' ? 'Components' : 'Settings' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="onThemeToggle()" fill="clear" style="--color: white;" data-testid="theme-toggle">
         <ion-icon slot="icon-only" [name]="isDarkMode ? 'sunny' : 'moon'"></ion-icon>
@@ -52,27 +52,12 @@
           <li>Click <strong>"Install"</strong> button</li>
           <li>Launch from Start Menu or Applications</li>
         </ol>
-        <div *ngIf="!canInstall" class="ion-text-center" style="margin: 12px 0; padding: 10px; background: #fef3c7; border-radius: 6px; border: 1px solid #fbbf24;">
-          <ion-icon name="information-circle" color="warning"></ion-icon>
-          <p style="margin: 4px 0 0 0; color: #92400e; font-size: 0.85rem;">
-            <strong>Note:</strong> Install button appears when browser detects PWA is installable.
-            You can also check browser menu (⋮) for "Install" option.
-          </p>
-        </div>
       </div>
       
-      <ion-button expand="block" color="primary" (click)="onInstallClick()" *ngIf="!installPromptDismissed && canInstall">
+      <ion-button expand="block" color="primary" (click)="onInstallClick()" *ngIf="!installPromptDismissed">
         <ion-icon name="download" slot="start"></ion-icon>
         Install Now
       </ion-button>
-      
-      <!-- Mobile instruction note -->
-      <div *ngIf="!installPromptDismissed && (deviceType === 'ios' || deviceType === 'android') && !canInstall" class="ion-text-center" style="margin: 16px 0; padding: 12px; background: #f0f9ff; border-radius: 8px; border: 1px solid #bae6fd;">
-        <ion-icon name="information-circle" color="primary"></ion-icon>
-        <p style="margin: 8px 0 0 0; color: #0369a1; font-size: 0.9rem;">
-          Follow the instructions above to install via your browser menu
-        </p>
-      </div>
       
       <ion-button expand="block" fill="outline" (click)="onSkipInstall()" *ngIf="!installPromptDismissed">
         Skip for Now
@@ -84,8 +69,7 @@
       </div>
     </div>
 
-    <!-- Status Card - HIDDEN FOR NOW -->
-    <!--
+    <!-- Status Card -->
     <ion-card>
       <ion-card-header>
         <ion-card-title>📊 Device Status</ion-card-title>
@@ -101,7 +85,6 @@
         </div>
       </ion-card-content>
     </ion-card>
-    -->
 
     <!-- Quick Actions -->
     <ion-card>
@@ -327,17 +310,17 @@
 <!-- Bottom Tab Bar -->
 <ion-tab-bar slot="bottom">
   <ion-tab-button tab="home" [selected]="currentTab === 'home'" (click)="switchTab('home')" style="--color: #64748b; --color-selected: #4f46e5;">
-    <ion-icon name="home" style="font-size: 24px; color: #4f46e5;"></ion-icon>
+    <ion-icon name="home"></ion-icon>
     <ion-label>Home</ion-label>
   </ion-tab-button>
   
   <ion-tab-button tab="components" [selected]="currentTab === 'components'" (click)="switchTab('components')" style="--color: #64748b; --color-selected: #4f46e5;">
-    <ion-icon name="cube" style="font-size: 24px; color: #4f46e5;"></ion-icon>
+    <ion-icon name="cube"></ion-icon>
     <ion-label>Components</ion-label>
   </ion-tab-button>
   
   <ion-tab-button tab="settings" [selected]="currentTab === 'settings'" (click)="switchTab('settings')" style="--color: #64748b; --color-selected: #4f46e5;">
-    <ion-icon name="settings" style="font-size: 24px; color: #4f46e5;"></ion-icon>
+    <ion-icon name="settings"></ion-icon>
     <ion-label>Settings</ion-label>
   </ion-tab-button>
 </ion-tab-bar>

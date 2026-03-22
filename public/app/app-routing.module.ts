@@ -1,25 +1,31 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { HomePage } from './pages/home/home.page';
+import { PagesPage } from './pages/pages/pages.page';
+import { ComponentsPage } from './pages/components/components.page';
+import { SettingsPage } from './pages/settings/settings.page';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./pages/home/home.page').then(m => m.HomePage)
+    component: HomePage
   },
   {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full'
+    path: 'pages',
+    component: PagesPage
+  },
+  {
+    path: 'components',
+    component: ComponentsPage
+  },
+  {
+    path: 'settings',
+    component: SettingsPage
   }
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { 
-      preloadingStrategy: PreloadAllModules,
-      scrollPositionRestoration: 'enabled'
-    })
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
