@@ -1170,6 +1170,11 @@ class HomePage {
     alert('Welcome to ToyBits! This is a native-like PWA experience with:\n\n• Native app UI components\n• Offline functionality\n• Push notifications\n• Dark mode support\n• Smooth animations');
   }
   switchTab(tabName) {
+    if (tabName === 'settings') {
+      // Navigate to the actual SettingsPage component
+      window.location.href = '/settings';
+      return;
+    }
     this.currentTab = tabName;
     // Scroll to top when switching tabs
     const content = document.querySelector('ion-content');
